@@ -30,6 +30,7 @@ function draw(){
   car1move();
   car2move();
   noStroke();
+  
 }
 
 //making the track
@@ -50,6 +51,8 @@ function title(){
 
 }
 
+  
+
 
 function car(){ //draws the cars that race
   image(car1, x1, y1-20, car1.width * scalar, car1.height * scalar);
@@ -58,7 +61,9 @@ function car(){ //draws the cars that race
   noStroke();
 }
 
-function car1move(){ //moving the redbull car
+
+//moving the redbull car
+function car1move(){ 
   if (keyIsDown(87)){ //s 
     y1 -= dy1;
   }
@@ -74,7 +79,10 @@ function car1move(){ //moving the redbull car
 
 }
 
-function car2move(){ //moving the ferrari car
+
+
+//moving the ferrari car
+function car2move(){ 
   if (keyIsDown(38)){ //up_arrow
     y2 -= dy2;
   }
