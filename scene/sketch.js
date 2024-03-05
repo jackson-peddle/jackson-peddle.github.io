@@ -25,6 +25,7 @@ function setup(){
 }
 
 function draw(){
+  track();
   car();
   car1move();
   car2move();
