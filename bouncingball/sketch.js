@@ -13,10 +13,10 @@ let y;
 
 function setup() {
   createCanvas(windowWidth,windowHeight);
-  x = width/2
-  y = height/2
-  dx = random(10, 20)
-  dy = random(10, 20)
+  x = width/2;
+  y = height/2;
+  dx = random(10, 20);
+  dy = random(10, 20);
   noStroke();
   changeCircleColour();
 }
@@ -25,7 +25,7 @@ function draw() {
   if (state === "startscreen") {
     background(0);
     showInstructions();
-}
+  }
 
   else if (state === "bouncingball") {
     background(220);
@@ -34,7 +34,7 @@ function draw() {
     bounceCircle();
     mouseVelocityChange();
     keyTyped();
-}
+  }
 }
 
 function showInstructions() {
@@ -48,34 +48,34 @@ function showInstructions() {
 
 function mousePressed() {
   if (state === "startscreen"){
-    state = "bouncingball"
+    state = "bouncingball";
   }
 }
 
 function drawCircle() {
   //display circle
-   fill(R, G, B)
-  circle(x, y, 2*r)
+  fill(R, G, B);
+  circle(x, y, 2*r);
 }
 function moveCircle(){
   //move circle
-  x+= dx
-  y+= dy
+  x+= dx;
+  y+= dy;
 }
 function bounceCircle(){
   if (x + r >= width || x - r <= 0){
-  dx = -1 * dx
-  changeCircleColour();
+    dx = -1 * dx;
+    changeCircleColour();
   }
   if (y + r >= height || y - r <= 0){
-  dy = -1 * dy
-  changeCircleColour();
+    dy = -1 * dy;
+    changeCircleColour();
   }
 }
 function changeCircleColour(){
-  R = random(0, 255)
-  G = random(0, 255)
-  B = random(0, 255)
+  R = random(0, 255);
+  G = random(0, 255);
+  B = random(0, 255);
 }
 function mouseVelocityChange(){
   //Mouse click changes the velocity
@@ -88,7 +88,7 @@ function keyTyped(){
   if (key === " "){
     dx = random(-5, 5);
     dy = random(-5, 5);    
-}
+  }
   if (key === "c") {
     changeCircleColour();
   }

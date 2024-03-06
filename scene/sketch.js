@@ -11,6 +11,7 @@ let dy2 = 5;
 let car1;
 let car2;
 let race;
+let start;
 
 
 
@@ -18,25 +19,44 @@ function preload(){
   car1 = loadImage("redbullcar1.png");
   car2 = loadImage("ferraricar1.png");
   race = loadImage("race.png");
+  start = loadImage("title.png");
 }
 function setup(){
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
-  background(race);
+  if (scene === 1) {
+    background(start);
+    let button1 = createButton("Click to Start"); //Button code borrowd from "https://p5js.org/reference/#/p5/createButton"
+    button1.position(width/2-width/15, height/2);
+    button1.size(width/8, height/10);
+    let button2 = createButton("Controls");
+    button2.position()
+    button1.mousePressed(() => {
+      scene = 2;
+      
+      button1.remove();
+    });
+  }
 
 }
 
 function draw(){
-  background(race);
-  image(car1, x1 + windowWidth/2, y1-10, car1.width * scalar, car1.height * scalar);
-  noStroke();
-  image(car2, x2 + windowWidth/2, y2+50, car2.width * scalar, car2.height * scalar);
-  noStroke();
-  car1move();
-  car2move();
-  noStroke();
+  
+  if (scene === 2) {
+    background(race);
+    image(car1, x1 + windowWidth/2, y1-10, car1.width * scalar, car1.height * scalar);
+    noStroke();
+    image(car2, x2 + windowWidth/2, y2+50, car2.width * scalar, car2.height * scalar);
+    noStroke();
+    car1move();
+    car2move();
+    noStroke();
+  }
   
 }
+
+
+
 
 //making the track
 function track(){
