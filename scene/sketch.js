@@ -10,23 +10,28 @@ let dx2 = 5;
 let dy2 = 5;
 let car1;
 let car2;
+let race;
 
 
 
 function preload(){
   car1 = loadImage("redbullcar1.png");
   car2 = loadImage("ferraricar1.png");
+  race = loadImage("race.png");
 }
 function setup(){
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
-  background("white");
-  track();
+  background(race);
+
 }
 
 function draw(){
-  track();
-  car();
+  background(race);
+  image(car1, x1 + windowWidth/2, y1-10, car1.width * scalar, car1.height * scalar);
+  noStroke();
+  image(car2, x2 + windowWidth/2, y2+50, car2.width * scalar, car2.height * scalar);
+  noStroke();
   car1move();
   car2move();
   noStroke();
@@ -55,9 +60,9 @@ function title(){
 
 
 function car(){ //draws the cars that race
-  image(car1, x1, y1-20, car1.width * scalar, car1.height * scalar);
+  image(car1, x1 + windowWidth/2, y1-10, car1.width * scalar, car1.height * scalar);
   noStroke();
-  image(car2, x2, y2+40, car2.width * scalar, car2.height * scalar);
+  image(car2, x2 + windowWidth/2, y2+50, car2.width * scalar, car2.height * scalar);
   noStroke();
 }
 
@@ -65,7 +70,7 @@ function car(){ //draws the cars that race
 //moving the redbull car
 function car1move(){ 
   if (keyIsDown(87)){ //s 
-    y1 -= dy1;
+    y1 -= dy1;  
   }
   if (keyIsDown(83)){ //w
     y1 += dy1;
@@ -76,8 +81,8 @@ function car1move(){
   if (keyIsDown(68)){ //d
     x1 += dy1;
   }
-
 }
+
 
 
 
