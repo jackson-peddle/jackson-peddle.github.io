@@ -1,8 +1,8 @@
 let scene = 1;
 let scalar = 0.3;
-let x1 = 0;
-let y1 = 0;
-let x2 = 0;
+let x1;
+let y1 = 10;
+let x2 = 60;
 let y2 = 0;
 let dx1 = 5;
 let dy1 = 5;
@@ -27,6 +27,19 @@ function preload(){ //loads all the images im using
 function setup(){
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
+  title();
+  x1 = windowWidth/2
+  x2 = windowWidth/2
+
+}
+
+function draw(){
+  track();
+  
+}
+
+
+function title(){
   if (scene === 1) {
     //Shows the title screen with a button to continue to the game
     //Button code borrowd from "https://p5js.org/reference/#/p5/createButton"
@@ -37,19 +50,34 @@ function setup(){
     let button2 = createButton("Controls");
     button2.position(width/2-width/15, height/2+50);
     button2.size(width/8, height/15);
+    let button3 = createButton("Credits");
+    button3.position(width/2-width/15, height/2+100);
+    button3.size(width/8, height/15);
     //^^^Shows the buttons I use on the title screen
     //Below removes the title buttons if the mouse clicks on start
     button1.mousePressed(() => {
       scene = 2;
       button1.remove();
       button2.remove();
+      button3.remove();
+    });
+    button2.mousePressed(() => {
+      scene = 3;
+      button1.remove();
+      button2.remove();
+      button3.remove();
+    });
+    button3.mousePressed(() => {
+      scene = 4;
+      button1.remove();
+      button2.remove();
+      button3.remove();
     });
   }
-
 }
 
-function draw(){
-  
+function track(){
+  //making the track screen
   if (scene === 2) {
     background(race);
     car();
@@ -58,50 +86,40 @@ function draw(){
     car2move();
     noStroke();
   }
+}
+
+function controls() {
+  //makes the controls screen appear
+  if (scene === 3) {
+
+  }
+}
   
+function credits() {
+  //makes the credits screen appear
+  if (scene === 4) {
+ 
+  }
 }
-
-
-
-
-//making the track
-function track(){
-  background("green");
-  fill(220, 149, 18);
-  rect(windowWidth/2, windowHeight/2, windowWidth/1.5, windowHeight/1.1, 10);
-  fill(0);
-  circle(windowWidth/2, windowHeight/2, windowHeight/1.2);
-  fill("red");
-  circle(windowWidth/2, windowHeight/2, windowHeight/2.5);
-
-
-
-}
-
-function title(){
-
-}
-
-  
 
 
 function car(){ //draws the cars that race
   angleMode(DEGREES);
   push();
   imageMode(CENTER);
-  translate(x1 + windowWidth/2, y1-10);
+  translate(x1, y1);
   rotate(rotate1);
   scale(0.65);
-  image(car1, 0, 0+60, car1.width * scalar, car1.height * scalar);
+  image(car1, 0, 0, car1.width * scalar, car1.height * scalar);
   noStroke();
   pop();
 
   push();
   imageMode(CENTER);
-  translate(x2 + windowWidth/2, y2+50);
+  translate(x2, y2);
   rotate(rotate2);
   scale(.65);
-  image(car2, 0, 0+60, car2.width * scalar, car2.height * scalar);
+  image(car2, 0, 0, car2.width * scalar, car2.height * scalar);
   noStroke();
   pop();
 }

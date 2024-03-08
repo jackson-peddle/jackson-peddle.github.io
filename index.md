@@ -2,7 +2,8 @@
 
 ## Demos
 - [Traffic Light](TrafficLight)
--[Bouncing Ball](bouncingball)
+- [Bouncing Ball](bouncingball)
+- [Collision Demo](collision)
 
 
 ## Projects
