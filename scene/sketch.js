@@ -1,9 +1,9 @@
 let scene = 1;
 let scalar = 0.3;
 let x1;
-let y1 = 10;
+let y1 = 80;
 let x2 = 60;
-let y2 = 0;
+let y2 = 40;
 let dx1 = 5;
 let dy1 = 5;
 let dx2 = 5;
@@ -14,6 +14,13 @@ let race;
 let start;
 let rotate1;
 let rotate2;
+let credit;
+let control; 
+let button1; //goes to game
+let button2; //goes to controls
+let button3; //goes to credits
+let button4; //goes back to title
+
 
 
 
@@ -23,20 +30,32 @@ function preload(){ //loads all the images im using
   car2 = loadImage("ferraricar.png");
   race = loadImage("race.png");
   start = loadImage("title.png");
+  credit = loadImage("credits.png");
+  control = loadImage("Controls.png");
 }
 function setup(){
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   title();
-  x1 = windowWidth/2
-  x2 = windowWidth/2
+  x1 = windowWidth/2;
+  x2 = windowWidth/2;
 
 }
 
 function draw(){
   track();
-  
+  controls();
+  credits();  
 }
+
+
+
+// function createScene1();{ //creates the title screen
+
+// }
+// function createScene2();
+// function createScene3();
+// function createScene4();
 
 
 function title(){
@@ -44,34 +63,42 @@ function title(){
     //Shows the title screen with a button to continue to the game
     //Button code borrowd from "https://p5js.org/reference/#/p5/createButton"
     background(start);
-    let button1 = createButton("Click to Start"); 
+    button1 = createButton("Click to Start"); 
+    button1.show();
     button1.position(width/2-width/15, height/2);
     button1.size(width/8, height/15);
-    let button2 = createButton("Controls");
+    button2 = createButton("Controls");
+    button2.show();
     button2.position(width/2-width/15, height/2+50);
     button2.size(width/8, height/15);
-    let button3 = createButton("Credits");
+    button3 = createButton("Credits");
+    button3.show();
     button3.position(width/2-width/15, height/2+100);
     button3.size(width/8, height/15);
+    button4 = createButton("Back");
+    button4.position(width/2-width/15, height/2+100);
+    button4.size(width/8, height/15);
+    button4.hide();
+
     //^^^Shows the buttons I use on the title screen
     //Below removes the title buttons if the mouse clicks on start
     button1.mousePressed(() => {
       scene = 2;
-      button1.remove();
-      button2.remove();
-      button3.remove();
+      button1.hide();
+      button2.hide();
+      button3.hide();
     });
     button2.mousePressed(() => {
       scene = 3;
-      button1.remove();
-      button2.remove();
-      button3.remove();
+      button1.hide();
+      button2.hide();
+      button3.hide();
     });
     button3.mousePressed(() => {
       scene = 4;
-      button1.remove();
-      button2.remove();
-      button3.remove();
+      button1.hide();
+      button2.hide();
+      button3.hide();
     });
   }
 }
@@ -91,14 +118,32 @@ function track(){
 function controls() {
   //makes the controls screen appear
   if (scene === 3) {
-
+    background(control);
+    button4.show();
+    button4.mousePressed(() => {
+      background(start);
+      scene = 1;
+      button4.hide();
+      button1.show();
+      button2.show();
+      button3.show();
+    });
   }
 }
   
 function credits() {
   //makes the credits screen appear
   if (scene === 4) {
- 
+    background(credit);
+    button4.show();
+    button4.mousePressed(() => {
+      background(start);
+      scene = 1;
+      button4.hide();
+      button1.show();
+      button2.show();
+      button3.show();
+    });
   }
 }
 
@@ -118,7 +163,7 @@ function car(){ //draws the cars that race
   imageMode(CENTER);
   translate(x2, y2);
   rotate(rotate2);
-  scale(.65);
+  scale(0.65);
   image(car2, 0, 0, car2.width * scalar, car2.height * scalar);
   noStroke();
   pop();
