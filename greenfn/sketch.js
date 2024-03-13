@@ -1,0 +1,15 @@
+// Green FN
+// Jackson Peddle
+// Today
+// GREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFNGREENFN
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+}
+
+function draw() {
+  background(220);
+  fill("green");
+  text("FN");
+  textAlign(CENTER);
+}
