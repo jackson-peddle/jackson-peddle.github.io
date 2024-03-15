@@ -6,6 +6,8 @@
 - [Collision Demo](collision)
 - [Arrays and Objects](circles)
 - [Green FN](greenfn)
+- [Generative Art](art)
+
 
 ## Projects
 - [Interactive Scene](scene)
