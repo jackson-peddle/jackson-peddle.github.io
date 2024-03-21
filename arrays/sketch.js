@@ -6,7 +6,7 @@
 
 let x;
 let y;
-let d = 50;
+let d = 100;
 let time = 0;
 
 function setup() {
