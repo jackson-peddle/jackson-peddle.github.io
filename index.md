@@ -8,6 +8,7 @@
 - [Green FN](greenfn)
 - [Generative Art](art)
 - [Terrain Generation](terrain)
+- [Bubble movement](bubble)
 
 ## Projects
 - [Interactive Scene](scene)

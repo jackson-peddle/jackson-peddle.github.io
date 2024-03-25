@@ -8,14 +8,20 @@ let x;
 let y;
 let d;
 let time = 0;
+let playerBall;
+let theBall = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noStroke();
 }
 
-function draw() {
+function draw() { 
   background(220);
   ball();
+  spawnBall();
+  moveBall();
+  displayBall();
 }
 
 function ball(){
@@ -28,41 +34,50 @@ function ball(){
   noStroke();
   circle(perlinBall.x, perlinBall.y, perlinBall.d);
   time += 0.01;
-
-  let playerBall = {
+}
+function spawnBall() {
+  playerBall = {
     x: width/2,
     y: height/2,
     d: windowHeight/20,
     dx: 10,
     dy: 10,
   };
+  theBall.push(playerBall);
+}
 
-  fill("red");
-  circle(playerBall.x, playerBall.y, playerBall.d);
-  noStroke();
+function displayBall(){
+  for (let ball of theBall){
+    fill("red");
+    circle(ball.x, ball.y, ball.d);
+  }
+}
 
-  if (playerBall.y < height - playerBall.d) {
+function moveBall(){
+  for (let ball of theBall){
+  if (ball.y < height - ball.d) {
     if (keyIsDown(83)) {
       //s
-      playerBall.y += playerBall.dy;
+      ball.y += ball.dy;
     }
   }
-  if (playerBall.y > playerBall.d) {
+  if (ball.y > ball.d) {
     if (keyIsDown(87)) {
       //w
-      playerBall.y -= playerBall.dy;
+      ball.y -= ball.dy;
     }
   }
-  if (playerBall.x > playerBall.d) {
+  if (ball.x > ball.d) {
     if (keyIsDown(65)) {
       //a
-      playerBall.x -= playerBall.dx;
+      ball.x -= ball.dx;
     }
   }
-  if (playerBall.x < width - playerBall.d) {
+  if (ball.x < width - ball.d) {
     if (keyIsDown(68)) {
       //d
-      playerBall.x += playerBall.dx;
+      ball.x += ball.dx;
     }
   }
+}
 }
