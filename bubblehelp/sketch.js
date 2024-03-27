@@ -4,6 +4,7 @@
 
 let theBubbles = [];
 let theBall = [];
+let hit = false;
 
 
 function setup() {
@@ -105,4 +106,12 @@ function moveBall(){
       }
     }
   }
+}
+
+function colliding() {
+  for (let ball of theBall){
+    hit = collideCircleCircle(ball.x, ball.y, ball.d, width/2, height/2, 100);
+  }
+  stroke(hit ? color("red") : 0);
+  console.log("colliding?", hit);
 }
