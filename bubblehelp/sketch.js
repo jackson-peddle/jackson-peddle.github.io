@@ -11,7 +11,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     spawnBubble();
   }
   spawnBall();
@@ -19,11 +19,11 @@ function setup() {
 
 function draw() {
   background(255);
-
-  moveBubblesWithNoise();
   displayBubbles();
+  moveBubblesWithNoise();
   displayBall();
   moveBall();
+  colliding();
 }
 
 function moveBubblesWithNoise(){
@@ -46,17 +46,21 @@ function spawnBubble() {
     size: random(200, 300),
     x: random(width),
     y: random(height),
-    colour: ("black"),
+    colour: 0,
+    r: random(255),
+    g: random(255),
+    b: random(255),
     timeX: random(1000000),
     timeY: random(1000000),
-    deltaTime: 0.03,
+    deltaTime: 0.01,
+    isColliding: false,
   };
   theBubbles.push(someBubble);
 }
 
 function displayBubbles() {
   for (let bubble of theBubbles) {
-    fill(bubble.colour);
+    fill(bubble.r, bubble.g, bubble.b);
     circle(bubble.x, bubble.y, bubble.size);
   }
 }
@@ -68,6 +72,7 @@ function spawnBall() {
     d: windowHeight/10,
     dx: 20,
     dy: 20,
+    isColliding: false,
   };
   theBall.push(playerBall);
 }
@@ -109,9 +114,15 @@ function moveBall(){
 }
 
 function colliding() {
+  
   for (let ball of theBall){
-    hit = collideCircleCircle(ball.x, ball.y, ball.d, width/2, height/2, 100);
+    for (let bubble of theBubbles) {
+      bubble.isColliding = collideCircleCircle(ball.x, ball.y, ball.d, bubble.x, bubble.y, bubble.size);
+      hit = bubble.isColliding;
+      console.log("colliding?", hit);
+      if (hit){
+        background(0);
+      }
+    }
   }
-  stroke(hit ? color("red") : 0);
-  console.log("colliding?", hit);
 }
