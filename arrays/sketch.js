@@ -1,129 +1,154 @@
-// Arrays and Object Notation
 // Jackson Peddle
-// 04/08/24
+// Arrays and Object Notation Final Project
+// 03/25/24
 
+//I used arrays to contain all of the info used for both the player ball as well as the enemy ball.
+//Extra for Experts -- I'm not too sure if Mr Schellenberg showed us the collide in class, and if he did I either wasn't there, or I didn't see the demo. So for that reason I'm saying my extra for experts is my collision between the player ball and the enemy balls.
 
-let dx, dy;
-let x;
-let y;
-let d;
-let time = 0;
-let playerBall;
+let theBubbles = [];
 let theBall = [];
+let hit = false;
 let scene = 1;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
+
+  for (let i = 0; i < 5; i++) { //making the amount of bubbles
+    spawnBubble();
+  }
   spawnBall();
-  
 }
 
-function draw() { 
+function draw() {
   playing();
-  dead();
 }
 
-function playing() {
-  if (scene === 1){
-    background(220);
-    noStroke();
-    ball();
-    moveBall();
+function playing() { //deciding to display the playing screen or the death screen
+  if (scene === 1) { //playing screen
+    background(255);
+    displayBubbles();
+    moveBubblesWithNoise();
     displayBall();
-    moveBallWithNoise();
-    showMovingBall();
+    moveBall();
+    colliding();
   }
-  if (scene === 2) {
+  else if (scene === 2) { //death screen
     background(0);
-
+    textSize(50);
+    fill(255);
+    stroke(255);
+    textAlign(CENTER);
+    text("You died!", width/2, height/2);
+    text("Press SPACE to retry", width/2, height/2 + 75);
   }
 }
 
-function dead(){
 
-}
-
-
-function showMovingBall() {
-  for (let ball of theBall){
-    fill(theBall.color);
-    noStroke();
-    circle(ball.x, ball.y, ball.size);
+function keyPressed(){
+  if (scene === 2){ //reseting the scene when you press space
+    if (key === " "){
+      scene = 1;
+    }
   }
 }
 
-function ball(){
-  let perlinBall = {
-    size: random(100, 200),
-    x: random(width),
-    y: random(height),
-    color: (255, 0, 0),
-    alpha: random(255),
-    timeX: random(1000000),
-    timeY: random(1000000),
-    deltaTime: 0.1,
-  };
-  theBall.push(perlinBall);
-}
-
-function moveBallWithNoise(){
-  for (let ball of theBall) {
-    let x = noise(ball.timeX) * width;
-    let y = noise(ball.timeY) * height;
+function moveBubblesWithNoise(){
+  for (let bubble of theBubbles) { //using noise intervals to move the enemy balls seperately
+    let x = noise(bubble.timeX) * width;
+    let y = noise(bubble.timeY) * height;
 
     //set the bubble objects location
-    ball.x = x;
-    ball.y = y;
+    bubble.x = x;
+    bubble.y = y;
 
     //increment timeX and timeY
-    ball.timeX += ball.deltaTime;
-    ball.timeY += ball. deltaTime;
+    bubble.timeX += bubble.deltaTime;
+    bubble.timeY += bubble. deltaTime;
   }
 }
 
-function spawnBall() {
-  playerBall = {
+function spawnBubble() { //setting the info for the enemy balls
+  let someBubble = {
+    size: random(200, 300),
+    x: random(width),
+    y: random(height),
+    colour: 0,
+    r: random(255),
+    g: random(255),
+    b: random(255),
+    timeX: random(1000000),
+    timeY: random(1000000),
+    deltaTime: 0.05,
+    isColliding: false,
+  };
+  theBubbles.push(someBubble);
+}
+
+function displayBubbles() { //displaying the enemy balls
+  for (let bubble of theBubbles) {
+    fill(bubble.r, bubble.g, bubble.b);
+    circle(bubble.x, bubble.y, bubble.size);
+  }
+}
+
+function spawnBall() { //setting the info for the players ball
+  let playerBall = {
     x: width/2,
-    y: height/2,
-    d: windowHeight/20,
-    dx: 10,
-    dy: 10,
+    y: height- height/10,
+    d: windowHeight/10,
+    dx: 30,
+    dy: 30,
+    isColliding: false,
   };
   theBall.push(playerBall);
 }
 
-function displayBall(){
+function displayBall(){ //displaying the player ball
   for (let ball of theBall){
     fill("red");
     circle(ball.x, ball.y, ball.d);
   }
 }
 
-function moveBall(){
+function moveBall(){ //movement controls for the player 
   for (let ball of theBall){
     if (ball.y < height - ball.d) {
       if (keyIsDown(83)) {
-        //s
+        //s key
         ball.y += ball.dy;
       }
     }
     if (ball.y > ball.d) {
       if (keyIsDown(87)) {
-        //w
+        //w key
         ball.y -= ball.dy;
       }
     }
     if (ball.x > ball.d) {
       if (keyIsDown(65)) {
-        //a
+        //a key
         ball.x -= ball.dx;
       }
     }
     if (ball.x < width - ball.d) {
       if (keyIsDown(68)) {
-        //d
+        //d key
         ball.x += ball.dx;
+      }
+    }
+  }
+}
+
+function colliding() { //checking wether the player ball is colliding with any of the enemy balls
+  
+  for (let ball of theBall){
+    for (let bubble of theBubbles) {
+      bubble.isColliding = collideCircleCircle(ball.x, ball.y, ball.d, bubble.x, bubble.y, bubble.size);
+      hit = bubble.isColliding;
+      if (hit){ //changing to the death screen if the player ball is colliding with any of the enemy balls at all
+        scene = 2;
       }
     }
   }
