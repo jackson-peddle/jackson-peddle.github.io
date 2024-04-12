@@ -10,6 +10,7 @@ let d;
 let time = 0;
 let playerBall;
 let theBall = [];
+let scene = 1;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -19,14 +20,30 @@ function setup() {
 }
 
 function draw() { 
-  background(220);
-  noStroke();
-  ball();
-  moveBall();
-  displayBall();
-  moveBallWithNoise();
-  showMovingBall();
+  playing();
+  dead();
 }
+
+function playing() {
+  if (scene === 1){
+    background(220);
+    noStroke();
+    ball();
+    moveBall();
+    displayBall();
+    moveBallWithNoise();
+    showMovingBall();
+  }
+  if (scene === 2) {
+    background(0);
+
+  }
+}
+
+function dead(){
+
+}
+
 
 function showMovingBall() {
   for (let ball of theBall){
@@ -45,7 +62,7 @@ function ball(){
     alpha: random(255),
     timeX: random(1000000),
     timeY: random(1000000),
-    deltaTime: 0.01,
+    deltaTime: 0.1,
   };
   theBall.push(perlinBall);
 }

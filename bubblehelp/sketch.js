@@ -5,6 +5,7 @@
 let theBubbles = [];
 let theBall = [];
 let hit = false;
+let scene = 1;
 
 
 function setup() {
@@ -18,12 +19,25 @@ function setup() {
 }
 
 function draw() {
-  background(255);
-  displayBubbles();
-  moveBubblesWithNoise();
-  displayBall();
-  moveBall();
-  colliding();
+  playing();
+}
+
+function playing() {
+  if (scene === 1) {
+    background(255);
+    displayBubbles();
+    moveBubblesWithNoise();
+    displayBall();
+    moveBall();
+    colliding();
+  }
+  else if (scene === 2) {
+    background(0);
+    textSize(50);
+    fill(255);
+    stroke(255);
+    text("You died!", width/2, height/2);
+  }
 }
 
 function moveBubblesWithNoise(){
@@ -52,7 +66,7 @@ function spawnBubble() {
     b: random(255),
     timeX: random(1000000),
     timeY: random(1000000),
-    deltaTime: 0.01,
+    deltaTime: 0.05,
     isColliding: false,
   };
   theBubbles.push(someBubble);
@@ -121,7 +135,7 @@ function colliding() {
       hit = bubble.isColliding;
       console.log("colliding?", hit);
       if (hit){
-        background(0);
+        scene = 2;
       }
     }
   }
