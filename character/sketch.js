@@ -1,13 +1,13 @@
-// 2D Grid
-//Jackson
-// Apr 9, 2024
+// 2D Grid Project: Minicraft
+// Jackson Peddle
+// Apr 25, 2024
 
 // if you are hard-coding a level, I'd use something like this
 
 
 let grid;
 let cellSize;
-const GRID_SIZE = 10;
+const GRID_SIZE = 30;
 const PLAYER = 9;
 const OPENSQUARE = 0;
 const IMPASSABLE = 1;
@@ -17,31 +17,34 @@ let player = {
 };
 let grass;
 let stone;
-
+let backgroundMusic;
+let wallHit;
+let state = "start";
 
 
 function preload() {
   grass = loadImage("grass.png");
   stone = loadImage("stone.png");
+  backgroundMusic = loadSound("cave themeb4.ogg");
+  wallHit = loadSound("sm64_mario_oof.mp3");
 }
 
 
 function setup() {
-  if (windowHeight>windowWidth) {
-    createCanvas(windowWidth, windowWidth);
-  }
-  else {
-    createCanvas(windowHeight, windowHeight);
-  }
+  createCanvas(windowWidth, windowHeight);
 
   //if randomizing the grid, do this:
-  grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
+  grid = generateGrid(GRID_SIZE/2, GRID_SIZE);
   
   //this is dumb -- should check if this is the right size!
   cellSize = height/grid.length;
 
   //add player to the grid
   grid[player.y][player.x] = PLAYER;
+
+  //equalize sounds
+  backgroundMusic.setVolume(0.5);
+  wallHit.setVolume(0.8);
 }
 
 function windowResized(){
@@ -56,14 +59,20 @@ function windowResized(){
 }
 
 function draw() {
-  background(220);
-  displayGrid();
+  if (state === "start") {
+    background(0);
+  }
+  else if (state === "game") {
+    background(220);
+    displayGrid();
+  }
+
 }
 
 function keyPressed() {
-  if (key === "r") {
-    grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
-  }
+  // if (key === "r") {
+  // grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
+  // }
 
   if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
@@ -81,11 +90,16 @@ function keyPressed() {
   if (key === "a") { //left
     movePlayer(player.x-1, player.y+0); //-1 on x axis, 0 on y axis
   }
+
+  if (key === " " && state === "start") { //start the game ad music
+    state = "game";
+    backgroundMusic.loop();
+  }
 }
 
 function movePlayer(x, y) {
   //dont move off the grid, and only move into open tiles
-  if (x < GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === OPENSQUARE) {
+  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === OPENSQUARE) {
     //previous player point
     let oldX = player.x;
     let oldY = player.y;
@@ -100,6 +114,9 @@ function movePlayer(x, y) {
     //change player location
     grid[player.y][player.x] = PLAYER;
   }
+  else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === IMPASSABLE) {
+    wallHit.play();
+  }
 }
 
 function mousePressed() {
@@ -107,13 +124,13 @@ function mousePressed() {
   let y = Math.floor(mouseY/cellSize);
 
   //toggle self and NESW neighbors
-    toggleCell(x, y);
+  toggleCell(x, y);
 
 }
 
 function toggleCell(x, y) {
   //make sure the cell youre toggling is in the grid...
-  if (x < GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0) {
+  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0) {
     //toggle the color of the cell
     if (grid[y][x] === OPENSQUARE) {
       grid[y][x] = IMPASSABLE;
@@ -141,13 +158,13 @@ function displayGrid() {
   }
 }
 
-function generateRandomGrid(cols, rows) {
+function generateGrid(cols, rows) {
   let emptyArray = [];
   for (let y = 0; y < rows; y++) {
     emptyArray.push([]);
-    for (let x = 0; x < cols; x++) {
+    for (let x = 0; x < width; x++) {
       //half the time, be a 1. Other half, be a 0.
-      if (random(100) < 50) {
+      if (x<height/2) {
         emptyArray[y].push(0);
       }
       else {
