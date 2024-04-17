@@ -2,15 +2,35 @@
 // Jackson Peddle
 // Apr 25, 2024
 
-// if you are hard-coding a level, I'd use something like this
-
-
-let grid;
+let grid = [
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+];
 let cellSize;
-const GRID_SIZE = 30;
+const GRID_SIZE = 20;
 const PLAYER = 9;
-const OPENSQUARE = 0;
-const IMPASSABLE = 1;
+const SKY = 0;
+const DIRT = 1;
+const STONE = 2;
+
 let player = {
   x: 0,
   y: 0,
@@ -34,7 +54,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   //if randomizing the grid, do this:
-  grid = generateGrid(GRID_SIZE/2, GRID_SIZE);
+  grid = generateGrid(GRID_SIZE, GRID_SIZE);
   
   //this is dumb -- should check if this is the right size!
   cellSize = height/grid.length;
@@ -74,9 +94,9 @@ function keyPressed() {
   // grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   // }
 
-  if (key === "e") {
-    grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
-  }
+  // if (key === "e") {
+  //   grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
+  // }
 
   if (key === "w") { //up
     movePlayer(player.x+0, player.y-1); //0 on x axis, -1 on y axis
@@ -99,7 +119,7 @@ function keyPressed() {
 
 function movePlayer(x, y) {
   //dont move off the grid, and only move into open tiles
-  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === OPENSQUARE) {
+  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === SKY) {
     //previous player point
     let oldX = player.x;
     let oldY = player.y;
@@ -109,45 +129,37 @@ function movePlayer(x, y) {
     player.y = y;
 
     //reset old location
-    grid[oldY][oldX] = OPENSQUARE;
+    grid[oldY][oldX] = SKY;
 
     //change player location
     grid[player.y][player.x] = PLAYER;
   }
-  else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === IMPASSABLE) {
+  else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === STONE) {
     wallHit.play();
   }
 }
 
-function mousePressed() {
-  let x = Math.floor(mouseX/cellSize);
-  let y = Math.floor(mouseY/cellSize);
 
-  //toggle self and NESW neighbors
-  toggleCell(x, y);
-
-}
-
-function toggleCell(x, y) {
-  //make sure the cell youre toggling is in the grid...
-  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0) {
-    //toggle the color of the cell
-    if (grid[y][x] === OPENSQUARE) {
-      grid[y][x] = IMPASSABLE;
-    }
-    else if (grid[y][x] === IMPASSABLE){
-      grid[y][x] = OPENSQUARE;
-    }
-  }
-}
+// function toggleCell(x, y) {
+//   //make sure the cell youre toggling is in the grid...
+//   if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0) {
+//     //toggle the color of the cell
+//     if (grid[y][x] === OPENSQUARE) {
+//       grid[y][x] = IMPASSABLE;
+//     }
+//     else if (grid[y][x] === IMPASSABLE){
+//       grid[y][x] = OPENSQUARE;
+//     }
+//   }
+// }
 
 function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
-      if (grid[y][x] === IMPASSABLE) {
+      if (grid[y][x] === STONE) {
         image(stone, x * cellSize, y * cellSize, cellSize);
       }
-      else if (grid[y][x] === OPENSQUARE){
+      else if (grid[y][x] === SKY){
         image(grass, x * cellSize, y * cellSize, cellSize);
       }
       else if (grid[y][x] === PLAYER){
@@ -163,8 +175,7 @@ function generateGrid(cols, rows) {
   for (let y = 0; y < rows; y++) {
     emptyArray.push([]);
     for (let x = 0; x < width; x++) {
-      //half the time, be a 1. Other half, be a 0.
-      if (x<height/2) {
+      if (x<height) {
         emptyArray[y].push(0);
       }
       else {
@@ -175,13 +186,13 @@ function generateGrid(cols, rows) {
   return emptyArray;
 }
 
-function generateEmptyGrid(cols, rows) {
-  let emptyArray = [];
-  for (let y = 0; y < rows; y++) {
-    emptyArray.push([]);
-    for (let x = 0; x < cols; x++) {
-      emptyArray[y].push(0);
-    }
-  }
-  return emptyArray;
-}
+// function generateEmptyGrid(cols, rows) {
+//   let emptyArray = [];
+//   for (let y = 0; y < rows; y++) {
+//     emptyArray.push([]);
+//     for (let x = 0; x < cols; x++) {
+//       emptyArray[y].push(0);
+//     }
+//   }
+//   return emptyArray;
+// }

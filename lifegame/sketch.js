@@ -15,9 +15,14 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 30;
+const GRID_SIZE = 40;
 let switching = "others";
 let isAutoPlayOn = false;
+let gospergun;
+
+function preload() {
+  gospergun = loadJSON("gosper.json");
+}
 
 function setup() {
   if (windowHeight>windowWidth) {
@@ -75,6 +80,9 @@ function keyPressed() {
   }
   if (key === "a") {
     isAutoPlayOn = !isAutoPlayOn;
+  }
+  if (key === "g") {
+    grid = gospergun.gun;
   }
 }
 
