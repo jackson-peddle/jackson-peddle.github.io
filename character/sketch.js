@@ -46,14 +46,19 @@ let obsidian;
 let leaves;
 let wood;
 let walk;
-let steve;
+let steve, steve1, steve2, steve3, steve4;
 let backgroundMusic;
 let wallHit;
 let state = "start";
-
+let level = 1;
+let cam;
 
 function preload() {
   steve = loadImage("steve.png");
+  steve1 = loadImage("steve1.png");
+  steve2 = loadImage("steve2.png");
+  steve3 = loadImage("steve3.png");
+  steve4 = loadImage("steve4.png");
   grass = loadImage("dirt.png");
   dirt = loadImage("grass.png");
   stone = loadImage("stone.png");
@@ -97,7 +102,6 @@ function draw() {
     background(220);
     displayGrid();
   }
-
 }
 
 function keyPressed() {
@@ -153,9 +157,6 @@ function displayGrid() {
       else if (grid[y][x] === DIRT){
         image(grass, x * cellSize, y * cellSize, cellSize);
       }
-      else if (grid[y][x] === PLAYER){
-        image(steve, x * cellSize, y * cellSize, cellSize);
-      }
       else if (grid[y][x] === OBBY){
         image(obsidian, x * cellSize, y * cellSize, cellSize);
       }
@@ -176,6 +177,23 @@ function displayGrid() {
         fill("lightblue");
         square(x * cellSize, y * cellSize, cellSize);
       }
+      else if (grid[y][x] === PLAYER){
+        if (level === 1){
+          image(steve, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (level === 2){
+          image(steve1, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (level === 3){
+          image(steve2, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (level === 4){
+          image(steve3, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (level === 5){
+          image(steve4, x * cellSize, y * cellSize, cellSize);
+        }
+      } 
     }
   }
 }
