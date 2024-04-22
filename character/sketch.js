@@ -5,7 +5,7 @@
 let grid = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 6, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 6, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,],
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
@@ -51,22 +51,23 @@ let backgroundMusic;
 let wallHit;
 let state = "start";
 let level = 1;
-let cam;
+let xOffset = player.x-2;
+let yOffset = player.y-2;
 
 function preload() {
-  steve = loadImage("steve.png");
-  steve1 = loadImage("steve1.png");
-  steve2 = loadImage("steve2.png");
-  steve3 = loadImage("steve3.png");
-  steve4 = loadImage("steve4.png");
-  grass = loadImage("dirt.png");
-  dirt = loadImage("grass.png");
-  stone = loadImage("stone.png");
-  obsidian = loadImage("obby.png");
-  wood = loadImage("wood.png");
-  leaves = loadImage("leaves.png");
-  backgroundMusic = loadSound("cave themeb4.ogg");
-  wallHit = loadSound("sm64_mario_oof.mp3");
+  steve = loadImage("assets/images/steve.png");
+  steve1 = loadImage("assets/images/steve1.png");
+  steve2 = loadImage("assets/images/steve2.png");
+  steve3 = loadImage("assets/images/steve3.png");
+  steve4 = loadImage("assets/images/steve4.png");
+  grass = loadImage("assets/images/dirt.png");
+  dirt = loadImage("assets/images/grass.png");
+  stone = loadImage("assets/images/stone.png");
+  obsidian = loadImage("assets/images/obby.png");
+  wood = loadImage("assets/images/wood.png");
+  leaves = loadImage("assets/images/leaves.png");
+  backgroundMusic = loadSound("assets/sounds/cave themeb4.ogg");
+  wallHit = loadSound("assets/sounds/sm64_mario_oof.mp3");
 }
 
 
@@ -105,11 +106,8 @@ function draw() {
 }
 
 function keyPressed() {
-  if (key === "w") { //up
-    movePlayer(player.x+0, player.y-1); //0 on x axis, -1 on y axis
-  }
-  if (key === "s") { //down
-    movePlayer(player.x+0, player.y+1); //0 on x axis, 1 on y axis
+  if (key === " ") { //jump
+    jump();
   }
   if (key === "d") { //right
     movePlayer(player.x+1, player.y+0); //1 on x axis, 0 on y axis
@@ -118,7 +116,7 @@ function keyPressed() {
     movePlayer(player.x-1, player.y+0); //-1 on x axis, 0 on y axis
   }
 
-  if (key === " " && state === "start") { //start the game ad music
+  if (key === "1" && state === "start") { //start the game ad music
     state = "game";
     backgroundMusic.loop();
   }
@@ -194,6 +192,18 @@ function displayGrid() {
           image(steve4, x * cellSize, y * cellSize, cellSize);
         }
       } 
+    }
+  }
+}
+function jump() {
+  let timer = millis();
+  while (timer < millis() + 1000) {
+
+    if (timer < timer+500) {
+      movePlayer(player.x+0, player.y-1); //0 on x axis, -1 on y axis
+    }
+    else{
+      movePlayer(player.x+0, player.y+1); //0 on x axis, +1 on y axis
     }
   }
 }
