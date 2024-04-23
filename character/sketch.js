@@ -3,8 +3,8 @@
 // Apr 25, 2024
 
 let grid = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 6, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 6, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,],
@@ -49,10 +49,12 @@ let walk;
 let steve, steve1, steve2, steve3, steve4;
 let backgroundMusic;
 let wallHit;
-let state = "start";
+let state = "game";
 let level = 1;
 let xOffset = player.x-2;
 let yOffset = player.y-2;
+let isJumping = false;
+let jumpStartTime = 0;
 
 function preload() {
   steve = loadImage("assets/images/steve.png");
@@ -103,11 +105,21 @@ function draw() {
     background(220);
     displayGrid();
   }
+  if (isJumping) {
+    let playerY;
+    playerY = player.y;
+    movePlayer(player.x+0, player.y-0); 
+    if (millis() < jumpStartTime + 200) {
+      isJumping = false;
+      movePlayer(player.x+0, playerY);
+    }
+  }
 }
 
 function keyPressed() {
-  if (key === " ") { //jump
-    jump();
+  if (key === " " && !isJumping) { //jump
+    isJumping = true;
+    jumpStartTime = millis();
   }
   if (key === "d") { //right
     movePlayer(player.x+1, player.y+0); //1 on x axis, 0 on y axis
@@ -124,7 +136,7 @@ function keyPressed() {
 
 function movePlayer(x, y) {
   //dont move off the grid, and only move into open tiles
-  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === WALK) {
+  if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === WALK || grid[y][x] === WOOD) {
     //previous player point
     let oldX = player.x;
     let oldY = player.y;
@@ -135,13 +147,11 @@ function movePlayer(x, y) {
 
     //reset old location
     grid[oldY][oldX] = WALK;
-
+    
+    
     //change player location
     grid[player.y][player.x] = PLAYER;
   }
-  // else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && player.x>3 ){
-
-  // }
 }
 
 
@@ -195,15 +205,4 @@ function displayGrid() {
     }
   }
 }
-function jump() {
-  let timer = millis();
-  while (timer < millis() + 1000) {
 
-    if (timer < timer+500) {
-      movePlayer(player.x+0, player.y-1); //0 on x axis, -1 on y axis
-    }
-    else{
-      movePlayer(player.x+0, player.y+1); //0 on x axis, +1 on y axis
-    }
-  }
-}
