@@ -303,7 +303,7 @@ function movePlayer(x, y) {
         counter ++;
       }
     }
-    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 5 && grid[y][x] === CRIMSON || level === 5 && grid[y][x] === NETHERITE) {
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 5 && grid[y][x] === NETHERITE) {
       //allows you to break netherite if youre level 6 or higher
       let oldX = player.x;
       let oldY = player.y;
@@ -471,3 +471,9 @@ grid2 = [[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
 
 //Nether stage: break more blocks to get netherite, then break a bunch of lava to get sent to the end.
 //End stage: Break more blocks to get a sword; kill endermen to beat the game.
+
+//left to do 
+//finsih leveling system in nether
+//place tiles for end
+//finish leveling system for end
+//ewin screen and death screen
