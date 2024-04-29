@@ -47,12 +47,22 @@ const CRIMSON = 12;
 const NETHERITE = 13;
 const MAGMA = 14;
 
+//end blocks
+const ENDSTONE = 15;
+const ENDERMAN = 16;
+const DRAGON = 17;
+
 let player = {
   x: 0,
   y: 3,
 };
+//overworld blocks
 let dirt, grass, stone, obsidian, leaves, wood, walk, diamond, lava;
+//nether blocks
 let netherrack, crimson, magma, netherite;
+//end blocks
+let endstone, enderman, dragon; 
+//character levels
 let steve, steve1, steve2, steve3, steve4, steve5, steve6;
 let backgroundMusic;
 let title;
@@ -87,8 +97,11 @@ function preload() {
   netherite = loadImage("assets/images/netherite.png");
   crimson = loadImage("assets/images/crimson.png");
   magma = loadImage("assets/images/magma.png");
+  
   //end blocks
-
+  endstone = loadImage("assets/images/endstone.png");
+  enderman = loadImage("assets/images/enderman.png");
+  dragon = loadImage("assets/images/dragon.png");
 
   //music/title/
   backgroundMusic = loadSound("assets/sounds/background_music.mp3");
@@ -157,12 +170,21 @@ function draw() {
       state = "end";
       grid = grid3;
       player.x = 0;
-      player.y = 3;
+      player.y = 5;
     }
   }
   else if (state === "end") {
     background(220);
     displayGrid();  
+    if (counter === 200) {
+      state = "win";
+    }
+  }
+  else if (state === "dead") {
+    background(0);
+  }
+  else if (state === "win") {
+    background(220);
   }
   
   if (isJumping) { //Jump command (not working)
@@ -199,6 +221,14 @@ function keyPressed() {
   }
   if (key === "ArrowUp") { //REMOVE BEFORE DONE (ADMIN LEVEL UP BUTTON)
     level++;
+  }
+  if (key === "ArrowDown") { //REMOVE BEFORE DONE (ADMIN LEVEL UP BUTTON)
+    level = 6;
+    state = "end";
+    player.x = 0;
+    player.y = 5;
+    grid = grid3;
+    displayGrid();
   }
 }
 
@@ -348,8 +378,40 @@ function movePlayer(x, y) {
       
     
     }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === OBBY) {
+      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      let oldX = player.x;
+      let oldY = player.y;
+      player.x = x;
+      player.y = y;
+      grid[oldY][oldX] = WALK;
+      grid[player.y][player.x] = PLAYER;
+    }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === LAVA) { 
+      //If you touch the lava, you die and the screen goes black.
+      let oldX = player.x;
+      let oldY = player.y;
+      player.x = x;
+      player.y = y;
+      state = "dead";
+      background(0);
+    }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === ENDERMAN) {
+      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      let oldX = player.x;
+      let oldY = player.y;
+      player.x = x;
+      player.y = y;
+      grid[oldY][oldX] = WALK;
+      grid[player.y][player.x] = PLAYER;
+    }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === DRAGON) {
+      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      counter ++;
+    }
   }
 }
+
 
 
   
@@ -437,8 +499,25 @@ function displayGrid() {
         }
       }
       else if (state === "end") {
-        if (grid[y][x] === OBBY){ // obsidian blocks
+        if (grid[y][x] === WALK){ // walkable sky blocks
+          fill("black");
+          square(x * cellSize, y * cellSize, cellSize);
+        }
+        else if (grid[y][x] === OBBY){ // obsidian blocks
           image(obsidian, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (grid[y][x] === ENDSTONE) {
+          image(endstone, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (grid[y][x] === ENDERMAN) {
+          image(enderman, x * cellSize, y * cellSize, cellSize);
+        }
+        else if (grid[y][x] === LAVA) {
+          fill("black");
+          square(x * cellSize, y * cellSize, cellSize);        
+        }
+        else if (grid[y][x] === DRAGON) {
+          image(dragon, x * cellSize, y * cellSize, cellSize);
         }
       }
     }
@@ -479,26 +558,27 @@ grid2 = [[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
   [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
 ];
 // the end grid.
-grid3 = [[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
-[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,],
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-[1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-[2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 8, 8, 8, 2, 2, 2, 8, 8, 8, 8, 8, 2, 2, 2, 2, 2, 2, 2, 2,],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 8, 2, 2, 2, 2, 2, 8, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[2, 2, 10, 10, 10, 10, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[10, 10, 10, 10, 10, 10, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,],
-[10, 10, 10, 10, 10, 10, 10, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,],
-[10, 10, 10, 10, 10, 10, 10, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,],
-[10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,],
-[10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,],]
+grid3 = [[7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [9, 7, 7, 7, 7, 7, 7, 3, 3, 16, 7, 16, 3, 3, 7, 7, 7, 3, 3, 16, 7, 7, 16, 7, 7, 16, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 17, 7, 7,],
+  [3, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,],
+  [7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7,],
+  [7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7,],
+  [7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7,],
+  [7, 7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+  [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 15, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
+];
 
 //Overworld stage: break blocks in stage one to get up to diamond level, then break 50 obby and get sent to the nether stage. (Dont die in the lava!)  (DONE)
 
@@ -506,7 +586,6 @@ grid3 = [[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5
 //End stage: Break more blocks to get a sword; kill endermen to beat the game.
 
 //left to do 
-//finsih leveling system in nether
-//place tiles for end
-//finish leveling system for end
-//ewin screen and death screen
+//win screen and death screen
+//place rest of tiles for nether
+//random chance dragon kills you (1/1000)
