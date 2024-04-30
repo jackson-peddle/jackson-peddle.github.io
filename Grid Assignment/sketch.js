@@ -1,6 +1,18 @@
-// 2D Grid Project: Minicraft
+// 2D Grid Project: Mine-(no)craft
 // Jackson Peddle
-// Apr 25, 2024
+// Apr 30, 2024
+
+//Traverse throught the Minecraft world collecting and breaking blocks in order to level up! BEWARE; the evil ender dragon awaits you in the end!
+//Make your way through the overworld collecting dirt, then stone, diamonds, and lastly obsidian. After collecting obsidian you will go to the nether.
+//In the Nether you will have to break a ton of netherrack to level up enough to break the ancient debris. After collecting all of the debris, you can go to the end.
+//In the end you'll kill all of the endermen then finally come across the ender dragon! Hit him a total of 200 times and you'll win the game!
+//Be careful though, because every time you swing at the dragon, he has a one in one thousand chance to kill you; sending you back to the start:(
+
+//The Overworld stage: Break blocks in stage one to get up to diamond level, then break 20 obby and get sent to the nether stage.
+
+//The Nether stage: Break more netherrack to level up, break netherite to get to the end.
+
+//The End stage: Kill endermen and then the dragon to beat the game.
 
 let grid = [
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
@@ -52,25 +64,32 @@ const ENDSTONE = 15;
 const ENDERMAN = 16;
 const DRAGON = 17;
 
+//the player
 let player = {
   x: 0,
   y: 3,
 };
+
 //overworld blocks
 let dirt, grass, stone, obsidian, leaves, wood, walk, diamond, lava;
+
 //nether blocks
 let netherrack, crimson, magma, netherite;
+
 //end blocks
-let endstone, enderman, dragon; 
+let endstone, enderman, dragon;
+
 //character levels
 let steve, steve1, steve2, steve3, steve4, steve5, steve6;
-let backgroundMusic;
-let title;
+
+let backgroundMusic, oof;
+let title, win, dead;
 let state = "start";
 let level = 1;
 let isJumping = false;
 let jumpStartTime = 0;
 let counter = 0;
+let randomDeath;
 
 function preload() {
   //loading all of the images and sounds
@@ -106,8 +125,11 @@ function preload() {
   //music/title/
   backgroundMusic = loadSound("assets/sounds/background_music.mp3");
   title = loadImage("assets/images/title.png");
-}
+  win = loadImage("assets/images/win.png");
+  dead = loadImage("assets/images/dead.png");
+  oof = loadSound("assets/sounds/oof.mp3");
 
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);  
@@ -134,9 +156,11 @@ function windowResized(){
 
 function draw() {
   if (state === "start") {
+    //title screen
     background(title);
   }
   else if (state === "overworld") {
+    //Counter code for the overworld blocks
     background(220);
     displayGrid();
     if (counter === 50 && level < 5) { //Auto changes your level if you collect 50 of the current item
@@ -157,6 +181,7 @@ function draw() {
 
   }
   else if (state === "nether") {
+    //Counter code for the nether blocks
     background(220);
     displayGrid();
     if (counter === 200 && level === 5) {
@@ -174,6 +199,7 @@ function draw() {
     }
   }
   else if (state === "end") {
+    //Counter code for the end blocks
     background(220);
     displayGrid();  
     if (counter === 200) {
@@ -181,30 +207,35 @@ function draw() {
     }
   }
   else if (state === "dead") {
-    background(0);
+    //sets the background to the dead scene
+    background(dead);
+    backgroundMusic.stop();
+    
+    
   }
-  else if (state === "win") {
-    background(220);
+  else if (state === "win") { 
+    //sets the background to the win scene
+    background(win);
   }
   
-  if (isJumping) { //Jump command (not working)
-    let playerY;
-    playerY = player.y;
-    movePlayer(player.x+0, player.y-0); 
-    if (millis() < jumpStartTime + 200) {
-      isJumping = false;
-      movePlayer(player.x+0, playerY);
-    }
-  }
+  // if (isJumping) { //Jump command (not working)
+  //   let playerY;
+  //   playerY = player.y;
+  //   movePlayer(player.x+0, player.y-1); 
+  //   if (millis() < jumpStartTime + 200) {
+  //     isJumping = false;
+  //     movePlayer(player.x+0, playerY+1);
+  //   }
+  // }
   
 
 }
 
 function keyPressed() {
-  if (key === " " && !isJumping) { //jump (not currently working for whatever reason)
-    jumpStartTime = millis();
-    isJumping = true;
-  }
+  // if (key === " " && !isJumping) { //jump (not currently working for whatever reason)
+  //   jumpStartTime = millis();
+  //   isJumping = true;
+  // }
   if (key === "d") { //right
     movePlayer(player.x+1, player.y+0); //1 on x axis, 0 on y axis
   }
@@ -213,22 +244,14 @@ function keyPressed() {
   }
   if (key === "s") { //down
     movePlayer(player.x+0, player.y+1); //0 on x axis, 1 on y axis
+    if (state === "dead") {
+      oof.play();
+    }
   }
 
-  if (key === " " && state === "start") { //start the game ad music
+  if (key === " " && state === "start") { //start the game and music
     state = "overworld";
     backgroundMusic.loop();
-  }
-  if (key === "ArrowUp") { //REMOVE BEFORE DONE (ADMIN LEVEL UP BUTTON)
-    level++;
-  }
-  if (key === "ArrowDown") { //REMOVE BEFORE DONE (ADMIN LEVEL UP BUTTON)
-    level = 6;
-    state = "end";
-    player.x = 0;
-    player.y = 5;
-    grid = grid3;
-    displayGrid();
   }
 }
 
@@ -295,7 +318,7 @@ function movePlayer(x, y) {
       }
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === OBBY) {
-      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      //Allows you to break obsidian.
       let oldX = player.x;
       let oldY = player.y;
       player.x = x;
@@ -307,18 +330,17 @@ function movePlayer(x, y) {
       }
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === LAVA) { 
-      //If you touch the lava, you die and the screen goes black.
+      //If you touch the lava, you die.
       let oldX = player.x;
       let oldY = player.y;
       player.x = x;
       player.y = y;
       state = "dead";
-      background(0);
     }
   }
   if (state === "nether") {
     if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === WALK) {
-      //only allowing you to walk on the WALK blocks if youre level 1
+      //only allowing you to walk on the WALK blocks
       //previous player point
       let oldX = player.x;
       let oldY = player.y;
@@ -333,6 +355,22 @@ function movePlayer(x, y) {
       //change player location
       grid[player.y][player.x] = PLAYER;
       
+    }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === LAVA) { 
+      //If you touch the lava, you die and the screen goes black.
+      let oldX = player.x;
+      let oldY = player.y;
+      player.x = x;
+      player.y = y;
+      state = "dead";
+    }
+    else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === MAGMA) { 
+      //If you touch the magma, you die and the screen goes black.
+      let oldX = player.x;
+      let oldY = player.y;
+      player.x = x;
+      player.y = y;
+      state = "dead";
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === CRIMSON || level > 4 && grid[y][x] === NETHERRACK) {
       //allows you to break netherrack if youre level 5 or higher
@@ -361,7 +399,7 @@ function movePlayer(x, y) {
   }
   if (state === "end") {
     if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && grid[y][x] === WALK) {
-      //only allowing you to walk on the WALK blocks if youre level 1
+      //only allowing you to walk on the WALK blocks
       //previous player point
       let oldX = player.x;
       let oldY = player.y;
@@ -379,7 +417,7 @@ function movePlayer(x, y) {
     
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === OBBY) {
-      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      //Allows you to break obsidian
       let oldX = player.x;
       let oldY = player.y;
       player.x = x;
@@ -394,10 +432,9 @@ function movePlayer(x, y) {
       player.x = x;
       player.y = y;
       state = "dead";
-      background(0);
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === ENDERMAN) {
-      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      //Allows you to kill the endermen
       let oldX = player.x;
       let oldY = player.y;
       player.x = x;
@@ -406,16 +443,15 @@ function movePlayer(x, y) {
       grid[player.y][player.x] = PLAYER;
     }
     else if (x < 2*GRID_SIZE && y < GRID_SIZE && x>=0 && y>=0 && level > 4 && grid[y][x] === DRAGON) {
-      //Once youve broken all of the diamonds, allows you to break obsidian, letting you go to the next stage
+      //Allows you to attack the dragon, hitting him 200 times to win
+      randomDeath = int(random(1000));
       counter ++;
+      if (randomDeath === 69) {
+        state = "dead";
+      }
     }
   }
 }
-
-
-
-  
-  
 
 function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
@@ -481,16 +517,16 @@ function displayGrid() {
         if (grid[y][x] === LAVA){ // lava blocks
           image(lava, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === NETHERRACK) {
+        else if (grid[y][x] === NETHERRACK) { // netherrack blocks
           image(netherrack, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === CRIMSON) {
+        else if (grid[y][x] === CRIMSON) { // crimson nyleum blocks
           image(crimson, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === NETHERITE) {
+        else if (grid[y][x] === NETHERITE) { // ancient debris blocks
           image(netherite, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === MAGMA) {
+        else if (grid[y][x] === MAGMA) { // magma blocks
           image(magma, x * cellSize, y * cellSize, cellSize);
         }
         else if (grid[y][x] === WALK){ // walkable sky blocks
@@ -506,17 +542,17 @@ function displayGrid() {
         else if (grid[y][x] === OBBY){ // obsidian blocks
           image(obsidian, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === ENDSTONE) {
+        else if (grid[y][x] === ENDSTONE) { // endstone blocks
           image(endstone, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === ENDERMAN) {
+        else if (grid[y][x] === ENDERMAN) { // enderman tiles
           image(enderman, x * cellSize, y * cellSize, cellSize);
         }
-        else if (grid[y][x] === LAVA) {
+        else if (grid[y][x] === LAVA) { // the void block
           fill("black");
           square(x * cellSize, y * cellSize, cellSize);        
         }
-        else if (grid[y][x] === DRAGON) {
+        else if (grid[y][x] === DRAGON) { // the ender dragon tile
           image(dragon, x * cellSize, y * cellSize, cellSize);
         }
       }
@@ -524,39 +560,29 @@ function displayGrid() {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 // //the nether grid.
 grid2 = [[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
-  [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
-  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 11, 11, 11, 11,],
+  [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,],
+  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 10, 10, 10,],
+  [11, 14, 11, 11, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 10, 10,],
+  [11, 14, 14, 14, 14, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10, 10, 10, 10,],
+  [11, 14, 14, 14, 14, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10,],
+  [11, 14, 14, 14, 14, 14, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 11, 10, 10,],
+  [11, 11, 14, 11, 14, 14, 14, 14, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
+  [11, 11, 11, 14, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
+  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11,],
+  [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 11, 11, 13, 11, 11, 11, 11,],
   [11, 11, 11, 11, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 11, 11, 11, 11,],
-  [11, 11, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 13, 13, 11, 11, 11, 11, 11, 11, 11, 11,],
+  [11, 11, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 13, 13, 10, 11, 11, 11, 11, 11, 11, 11,],
   [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 13, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
   [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
   [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
   [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,],
 ];
+
 // the end grid.
 grid3 = [[7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
@@ -579,13 +605,3 @@ grid3 = [[7, 7, 7, 7, 7, 7, 7, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
   [7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 15, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,],
 ];
-
-//Overworld stage: break blocks in stage one to get up to diamond level, then break 50 obby and get sent to the nether stage. (Dont die in the lava!)  (DONE)
-
-//Nether stage: break more blocks to get netherite, then break a bunch of lava to get sent to the end.
-//End stage: Break more blocks to get a sword; kill endermen to beat the game.
-
-//left to do 
-//win screen and death screen
-//place rest of tiles for nether
-//random chance dragon kills you (1/1000)
