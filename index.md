@@ -10,7 +10,10 @@
 - [Terrain Generation](terrain)
 - [Bubble movement](bubble)
 - [Platformer](platformer)
+- [Game of Life](lifegame)
+- [Walker OOP](walker)
 
 ## Projects
 - [Interactive Scene](scene)
 - [Array scene](arrays)
+- [Grid Scene](gridScene)
