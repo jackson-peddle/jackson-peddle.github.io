@@ -12,6 +12,8 @@
 - [Platformer](platformer)
 - [Game of Life](lifegame)
 - [Walker OOP](walker)
+- [Walker OOP with Arrays](Walker-With-Arrays)
+- [Fireworks](fireworks)
 
 ## Projects
 - [Interactive Scene](scene)
