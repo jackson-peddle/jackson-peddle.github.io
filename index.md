@@ -16,6 +16,7 @@
 - [Fireworks](fireworks)
 - [Connected Nodes OOP Demo](nodes)
 - [Recursive Circles](recursivecircles)
+- [Sierpinski Triangle](sierpinskitriangle)
 
 ## Projects
 - [Interactive Scene](scene)
