@@ -15,6 +15,7 @@
 - [Walker OOP with Arrays](Walker-With-Arrays)
 - [Fireworks](fireworks)
 - [Connected Nodes OOP Demo](nodes)
+- [Recursive Circles](recursivecircles)
 
 ## Projects
 - [Interactive Scene](scene)
