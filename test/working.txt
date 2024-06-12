@@ -15,28 +15,22 @@ const gameState = {
   SETTINGS: 3,
   CREDITS: 4,
 };
-const songState = { //all of the states selectable
-  SONG1: 1,
-  SONG2: 2,
-  SONG3: 3,
-  SONG4: 4,
-  SONG5: 5,
-};
 let lastState = gameState.MENU;
-let buttons = []; //start screen button array
-let backButton = []; //back buttons array
-let songButton = []; //level select buttons array
-let levelSelectBackground, startScreenBackground; //background images
-let startButton, settingsButton, creditsButton, tempDeathButton, goBackButton; //images for buttons
-let state = gameState.MENU; //starting state
+let buttons = [];
+let backButton = [];
+let levelSelectBackground, startScreenBackground;
+let startButton, settingsButton, creditsButton, tempDeathButton, goBackButton;
+
+
+let state = gameState.MENU;
+let song;
 let notes = [];
 let fft;
 let lastNoteTime = 0;
 let gameStartTime;
 let score = 0;
-let activeKeys = [false, false, false, false]; //the 4 keys used
+let activeArrows = [false, false, false, false]; 
 let songDuration;
-let selectedSong;
 
 
 function preload() {
@@ -46,8 +40,8 @@ function preload() {
   startScreenBackground = loadImage("Assets/Images/intensewalrusmissionfr.png");
   levelSelectBackground = loadImage("Assets/Images/flower_background.jpg");
   creditsButton = loadImage("Assets/Images/credits.png");
-  songState.SONG1 = loadSound("riot.mp3", () => {
-    songDuration = songState.SONG1.duration(); // get the duration of the song after it has been loaded
+  song = loadSound("riot.mp3", () => {
+    songDuration = song.duration(); // get the duration of the song after it has been loaded
   });
 } 
 
@@ -61,16 +55,12 @@ function setup() {
   buttons.push(settingsSelectButton);
   let infoCreditsButton = new Button(width-200, height/2 + 200, width/5, height/5, gameState.CREDITS, creditsButton);
   buttons.push(infoCreditsButton);
-  // let startLevel1 = new Button(width/2, height/2, width/5, height/5, gameState.GAME, settingsButton);
-  // buttons.push(startLevel1);
+  let startLevel1 = new Button(width/2, height/2, width/5, height/5, gameState.GAME, settingsButton);
+  buttons.push(startLevel1);
   let goBackButton = new Button(0 + width/12, 0 + height/12, width/8, height/10, state, settingsButton);
   backButton.push(goBackButton);
-  let songOneButton = new Button(0 + width/12, 0 + height/12, width/8, height/10, songState.SONG1, settingsButton);
-  songButton.push(songOneButton);
-
+  
   fft = new p5.FFT(0.8, 32);
-
-  selectedSong = songState.SONG1;
 }
 
 function draw() {
@@ -105,19 +95,18 @@ function drawLevels() {
   imageMode(CORNER);
   background(levelSelectBackground);
   redMouseCircle();
-  backButtonFunction();
-  selectSongButton();
+  backButtonNoS();
 }
 
 function drawSettings() {
   background(0);
   redMouseCircle();
-  backButtonFunction();
+  backButtonNoS();
 }
 
 function drawCredits() {
   background("red");
-  backButtonFunction();
+  backButtonNoS();
 }
 
 function mousePressed() {
@@ -126,9 +115,6 @@ function mousePressed() {
     button.mouseClicked();
   }
   for (let button of backButton) {
-    button.mouseClicked();
-  }
-  for (let button of songButton) {
     button.mouseClicked();
   }
 }
@@ -146,14 +132,8 @@ function regularButtons() {
   }
 }
 
-function backButtonFunction() {
+function backButtonNoS() {
   for (let button of backButton) {
-    button.update();
-  }
-}
-
-function selectSongButton() {
-  for (let button of songButton) {
     button.update();
   }
 }
@@ -220,40 +200,39 @@ class Button {
 }
 
 function keyPressed() {
-  let keyIndex;
+  let arrowIndex;
 
   if (keyCode === 65) {
-    keyIndex = 0;
+    arrowIndex = 0;
   } 
   else if (keyCode === 83) {
-    keyIndex = 1;
+    arrowIndex = 1;
   } 
   else if (keyCode === 75) {
-    keyIndex = 2;
+    arrowIndex = 2;
   } 
   else if (keyCode === 76) {
-    keyIndex = 3;
+    arrowIndex = 3;
   }
 
-  if (keyIndex !== undefined) {
-    activeKeys[keyIndex] = true;
+  if (arrowIndex !== undefined) {
+    activeArrows[arrowIndex] = true;
   }
 
   if (keyCode === 13) {
     if (state === gameState.MENU) {
       state = gameState.GAME;
-      selectedSong.play();
+      song.play();
       gameStartTime = millis();
     } 
     else if (state === gameState.GAME) {
-      selectedSong.stop();
+      song.stop();
       state = gameState.MENU;
     }
-  }
-  
+  } 
   else if (state === gameState.GAME) {
     const hitNoteIndex = notes.findIndex(note => {
-      return note.keyIndex === keyIndex && note.y >= height - 150 && note.y <= height - 50;
+      return note.arrowIndex === arrowIndex && note.y >= height - 150 && note.y <= height - 50;
     });
 
     if (hitNoteIndex !== -1 && !notes[hitNoteIndex].pressed) {
@@ -261,7 +240,7 @@ function keyPressed() {
       notes[hitNoteIndex].pressed = true;
       notes.splice(hitNoteIndex, 1);
     } 
-    else if (keyIndex !== undefined && (hitNoteIndex === -1 || hitNoteIndex !== -1 && notes[hitNoteIndex].pressed)) {
+    else if (arrowIndex !== undefined && (hitNoteIndex === -1 || hitNoteIndex !== -1 && notes[hitNoteIndex].pressed)) {
       // Deduct points or handle misses as needed
       score -= 50;
     }
@@ -271,14 +250,13 @@ function keyPressed() {
 function drawScore() {
   fill(255);
   textSize(32);
-  textAlign(CENTER, CENTER);
   text(`Score: ${score}`, width / 2, 40);
 }
 
 function drawPercentage() { // function to draw the percentage text
   fill(255);
   textSize(24);
-  let percentage = map(selectedSong.currentTime(), 0, songDuration, 0, 100); // map the current time to a percentage
+  let percentage = map(song.currentTime(), 0, songDuration, 0, 100); // map the current time to a percentage
   percentage = percentage.toFixed(0); // round the percentage to the nearest integer
   text(`${percentage}%`, width / 2, height - 25); // display the percentage text centered at the bottom of the canvas
 }
@@ -286,7 +264,7 @@ function drawPercentage() { // function to draw the percentage text
 
 function drawGame() {
   background(0);
-  drawKeys();
+  drawArrows();
   drawScore();
   drawPercentage();
   fft.analyze();
@@ -325,22 +303,22 @@ function generateNotes() {
     switch (direction) { // create a new note in the chosen direction
     case 0: // left
       if (bass > 200) { // adjust the threshold for the left arrow
-        notes.push(new Bar("LEFT"));
+        notes.push(new Arrow("LEFT"));
       }
       break;
     case 1: // up
       if (mid > 225) { // adjust the threshold for the up arrow
-        notes.push(new Bar("UP"));
+        notes.push(new Arrow("UP"));
       }
       break;
     case 2: // down
       if (lowMid > 150 && treble > 150) {
-        notes.push(new Bar("DOWN"));
+        notes.push(new Arrow("DOWN"));
       }
       break;
     case 3: // right
       if (highMid > 150 && bass > 150) {
-        notes.push(new Bar("RIGHT"));
+        notes.push(new Arrow("RIGHT"));
       }
       break;
     }
@@ -349,9 +327,9 @@ function generateNotes() {
   }
 }
 
-function drawKey(x, y, noteID, colorVal) {
+function drawArrow(x, y, rotation, colorVal) {
   // a
-  if (noteID === 0) {
+  if (rotation === 0) {
     fill(colorVal);
     rect(x, y, 55, 25);
     rectMode(CENTER);
@@ -363,7 +341,7 @@ function drawKey(x, y, noteID, colorVal) {
     rect(x, y, 35, 8);
   }
   // s
-  else if (noteID === 1) {
+  else if (rotation === 1) {
     fill(colorVal);
     rect(x, y, 55, 25);
     rectMode(CENTER);
@@ -374,7 +352,7 @@ function drawKey(x, y, noteID, colorVal) {
     rect(x, y, 35, 8);
   }
   // k
-  else if (noteID === 2) {
+  else if (rotation === 2) {
     fill(colorVal);
     rect(x, y, 55, 25);
     rectMode(CENTER);
@@ -385,7 +363,7 @@ function drawKey(x, y, noteID, colorVal) {
     rect(x, y, 35, 8);
   }
   // l
-  else if (noteID === 3) {
+  else if (rotation === 3) {
     fill(colorVal);
     rect(x, y, 55, 25);
     rectMode(CENTER);
@@ -397,43 +375,43 @@ function drawKey(x, y, noteID, colorVal) {
   }
 }
 
-function drawKeys() {
-  const keySize = 60;
+function drawArrows() {
+  const arrowSize = 60;
   const yPos = height - 100;
-  const xOffset = width / 2 - 1.5 * keySize;
+  const xOffset = width / 2 - 1.5 * arrowSize;
 
   for (let i = 0; i < 4; i++) {
-    let x = xOffset + i * keySize;
-    let colorVal = activeKeys[i] ? color(255, 255, 255) : color(0, 0, 0);
-    drawKey(x, yPos, i, colorVal);
+    let x = xOffset + i * arrowSize;
+    let colorVal = activeArrows[i] ? color(255, 255, 255) : color(0, 0, 0);
+    drawArrow(x, yPos, i, colorVal);
   }
 }
 
-class Bar { // class for the arrows that fall down the screen
+class Arrow { // class for the arrows that fall down the screen
   constructor(direction) {
     this.direction = direction;
     this.y = 0;
     this.speed = 5;
     this.pressed = false;
-    const keySize = 60;
-    const xOffset = width / 2 - 1.5 * keySize;
+    const arrowSize = 60;
+    const xOffset = width / 2 - 1.5 * arrowSize;
 
     switch (this.direction) {
     case "LEFT":
       this.x = xOffset;
-      this.keyIndex = 0;
+      this.arrowIndex = 0;
       break;
     case "UP":
-      this.x = xOffset + keySize;
-      this.keyIndex = 1;
+      this.x = xOffset + arrowSize;
+      this.arrowIndex = 1;
       break;
     case "DOWN":
-      this.x = xOffset + 2 * keySize;
-      this.keyIndex = 2;
+      this.x = xOffset + 2 * arrowSize;
+      this.arrowIndex = 2;
       break;
     case "RIGHT":
-      this.x = xOffset + 3 * keySize;
-      this.keyIndex = 3;
+      this.x = xOffset + 3 * arrowSize;
+      this.arrowIndex = 3;
       break;
     }
   }
@@ -443,31 +421,31 @@ class Bar { // class for the arrows that fall down the screen
   }
 
   display() {
-    let noteID;
+    let rotation;
     let colorVal = color(0);
 
     switch (this.direction) {
     case "LEFT":
-      noteID = 0;
+      rotation = 0;
       colorVal = color(255, 0, 0);
       break;
     case "UP":
-      noteID = 1;
+      rotation = 1;
       colorVal = color(0, 255, 0);
       break;
     case "DOWN":
-      noteID = 2;
+      rotation = 2;
       colorVal = color(0, 0, 255);
       break;
     case "RIGHT":
-      noteID = 3;
+      rotation = 3;
       colorVal = color(255, 255, 0);
       break;
     }
 
     push();
     translate(this.x, this.y);
-    drawKey(0, 0, noteID, colorVal);
+    drawArrow(0, 0, rotation, colorVal);
     pop();
   }
   
@@ -476,7 +454,7 @@ class Bar { // class for the arrows that fall down the screen
   }
   
   removeIfHit() {
-    if (this.y >= height - 150 && this.y <= height - 50 && activeKeys[this.keyIndex] && !this.pressed) {
+    if (this.y >= height - 150 && this.y <= height - 50 && activeArrows[this.arrowIndex] && !this.pressed) {
       this.pressed = true;
       return true;
     }
@@ -490,22 +468,22 @@ class Bar { // class for the arrows that fall down the screen
 
 
 function keyReleased() {
-  let keyIndex;
+  let arrowIndex;
 
   if (keyCode === 65) {
-    keyIndex = 0;
+    arrowIndex = 0;
   } 
   else if (keyCode === 83) {
-    keyIndex = 1;
+    arrowIndex = 1;
   } 
   else if (keyCode === 75) {
-    keyIndex = 2;
+    arrowIndex = 2;
   } 
   else if (keyCode === 76) {
-    keyIndex = 3;
+    arrowIndex = 3;
   }
 
-  if (keyIndex !== undefined) {
-    activeKeys[keyIndex] = false;
+  if (arrowIndex !== undefined) {
+    activeArrows[arrowIndex] = false;
   }
 }
